@@ -78,8 +78,15 @@ const login = async (req, res, next) => {
       });
     }
 
-    // Explicitly query including passwordHash
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    // Allow matching by direct email, or username alias (e.g. "bhavya" -> bhavya@driveease.com)
+    const loginIdentifier = email.toLowerCase().trim();
+    const user = await User.findOne({
+      $or: [
+        { email: loginIdentifier },
+        { email: `${loginIdentifier}@driveease.com` },
+        { name: new RegExp(`^${loginIdentifier}$`, 'i') },
+      ],
+    });
     if (!user) {
       return res.status(401).json({
         success: false,

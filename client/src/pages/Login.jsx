@@ -189,9 +189,9 @@ const Login = () => {
               type="button"
               className="btn btn-secondary btn-sm"
               style={{ flex: 1, fontSize: '0.775rem', color: 'var(--primary)' }}
-              onClick={() => fillCredentials('admin@driveease.com', 'Admin@DriveEase2026')}
+              onClick={() => fillCredentials('bhavya@driveease.com', 'bhavya@0507')}
             >
-              <ShieldAlert size={14} /> Admin
+              <ShieldAlert size={14} /> Admin (Bhavya)
             </button>
           </div>
         </div>
