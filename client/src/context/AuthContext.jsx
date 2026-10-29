@@ -51,7 +51,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: receivedUser };
     } catch (error) {
       const message =
-        error.response?.data?.message || 'Login failed. Please check credentials.';
+        error.response?.data?.message ||
+        (!error.response || error.code === 'ERR_NETWORK' || error.message === 'Network Error'
+          ? 'Cannot connect to backend server. Please verify that the backend is running (port 5000) or check the API URL.'
+          : error.message || 'Login failed. Please check credentials.');
       return { success: false, message };
     }
   };
@@ -71,7 +74,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: receivedUser };
     } catch (error) {
       const message =
-        error.response?.data?.message || 'Registration failed. Please check inputs.';
+        error.response?.data?.message ||
+        (!error.response || error.code === 'ERR_NETWORK' || error.message === 'Network Error'
+          ? 'Cannot connect to backend server. Please verify that the backend is running (port 5000) or check the API URL.'
+          : error.message || 'Registration failed. Please check your inputs.');
       return { success: false, message };
     }
   };
