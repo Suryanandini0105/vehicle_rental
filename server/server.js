@@ -67,14 +67,29 @@ app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to DriveEase API',
-    healthCheck: '/api/health',
-    documentation: 'See README.md for endpoint specifications',
+// Serve static client build if present (Unified Single-Service Deployment)
+const fs = require('fs');
+const clientDistPath = path.join(__dirname, '../client/dist');
+
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+
+  app.get('*', (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, 'index.html'));
   });
-});
+} else {
+  // Root route for standalone API mode
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Welcome to DriveEase API',
+      healthCheck: '/api/health',
+      documentation: 'See README.md for endpoint specifications',
+    });
+  });
+}
 
 // Centralized Error Handling Middlewares
 app.use(notFound);
