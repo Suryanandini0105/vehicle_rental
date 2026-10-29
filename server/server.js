@@ -30,6 +30,8 @@ app.use(
       if (!origin) return callback(null, true);
       if (
         allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
         process.env.NODE_ENV !== 'production'
       ) {
         return callback(null, true);
@@ -37,6 +39,8 @@ app.use(
       return callback(new Error('CORS policy: Not allowed by CORS'));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
