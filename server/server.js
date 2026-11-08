@@ -48,6 +48,20 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Fast DB health check middleware for API requests: return clear 503 instead of hanging
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') return next();
+  const dbStatus = getDBStatus();
+  if (!dbStatus.connected) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database is currently unreachable. Please ensure IP 0.0.0.0/0 is added in MongoDB Atlas Network Access.',
+      database: dbStatus,
+    });
+  }
+  next();
+});
+
 // Health Check API
 app.get('/api/health', (req, res) => {
   const dbStatus = getDBStatus();

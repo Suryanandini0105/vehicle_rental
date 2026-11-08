@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Disable buffering so queries fail immediately with clear 503 instead of freezing for 10-30s
+mongoose.set('bufferCommands', false);
+
 let isConnected = false;
 
 const connectDB = async () => {
@@ -13,6 +16,7 @@ const connectDB = async () => {
 
     const conn = await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
     });
 
     isConnected = true;
@@ -21,9 +25,8 @@ const connectDB = async () => {
     isConnected = false;
     console.error(`❌ MongoDB Connection Error: ${error.message}`);
     console.log('\n💡 [College FSD Guide - MongoDB Connection]');
-    console.log('1. If using MongoDB Atlas: Ensure your MONGODB_URI in server/.env has your username, password, and cluster address.');
-    console.log('2. In MongoDB Atlas Network Access: Ensure IP 0.0.0.0/0 (allow from anywhere) is added.');
-    console.log('3. If using local MongoDB: Ensure the local mongod service is started (e.g., net start MongoDB).\n');
+    console.log('1. In MongoDB Atlas: Go to Network Access and add IP 0.0.0.0/0 (Allow Access from Anywhere).');
+    console.log('2. Check that your user credentials in MONGODB_URI are correct.\n');
   }
 };
 
